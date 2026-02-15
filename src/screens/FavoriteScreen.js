@@ -50,7 +50,7 @@ export default function FavoriteScreen() {
   return (
     <>
       {/* Heading */}
-      <View testID="FavoriteRecipes">
+      <View testID="favoriteRecipes">
         <Text
           style={{ fontSize: hp(3.8), marginTop: hp(4), marginLeft: 20 }}
           className="font-semibold text-neutral-600"
@@ -73,7 +73,35 @@ export default function FavoriteScreen() {
       >
         <Text style={{ color: "#fff" }}>Go back</Text>
       </TouchableOpacity>
-    
+
+      {/* FlatList for favorite recipes */}
+      <FlatList
+        data={favoriteRecipesList}
+        keyExtractor={(item) => item.idFood}
+        contentContainerStyle={styles.listContentContainer}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            style={styles.cardContainer}
+            onPress={() => navigation.navigate("RecipeDetail", item)}
+          >
+            <Image
+              source={{ uri: item.recipeImage }}
+              style={styles.recipeImage}
+              resizeMode="cover"
+            />
+            <View style={styles.recipeInfo}>
+              <Text style={styles.recipeTitle} numberOfLines={2}>
+                {item.recipeName.length > 20 
+                  ? `${item.recipeName.substring(0, 20)}...` 
+                  : item.recipeName}
+              </Text>
+              <Text style={styles.recipeCategory}>
+                {item.recipeCategory || item.category}
+              </Text>
+            </View>
+          </TouchableOpacity>
+        )}
+      />
     </>
   );
 }
@@ -111,9 +139,19 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginRight: wp(4),
   },
+  recipeInfo: {
+    flex: 1,
+    justifyContent: "center",
+  },
   recipeTitle: {
     fontSize: hp(2),
     fontWeight: "bold",
     color: "#4B5563", // text-neutral-700
+    marginBottom: hp(0.5),
+  },
+  recipeCategory: {
+    fontSize: hp(1.6),
+    color: "#6B7280", // text-gray-500
+    fontWeight: "500",
   },
 });
