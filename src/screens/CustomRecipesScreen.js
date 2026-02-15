@@ -20,7 +20,7 @@ import {
     const dispatch = useDispatch();
   
     const route = useRoute();
-    const { recipe } = route.params || {}; // Pass the  object as a parameter
+    const { recipe, index = 0 } = route.params || {}; // Pass the recipe object and index as parameters
     console.log('recipe',recipe);
     
     const favoriteRecipe = useSelector(
@@ -28,7 +28,9 @@ import {
     );
     console.log('favoriteRecipe from custom',favoriteRecipe);
     
-    const isFavourite = favoriteRecipe.includes(recipe.idCategory); // Adjust this according to your recipe structure
+    const isFavourite = favoriteRecipe?.some(
+      (favRecipe) => favRecipe.id === recipe?.id
+    ); // Check if recipe exists in favorites by ID
   
     if (!recipe) {
       return (
@@ -50,8 +52,14 @@ import {
       >
         {/* Recipe Image */}
         <View style={styles.imageContainer} testID="imageContainer">
-        {recipe.image && (
-            <Image source={{ uri: recipe.image }} style={styles.recipeImage} />
+          {recipe.image && (
+            <Image 
+              source={{ uri: recipe.image }} 
+              style={[
+                styles.recipeImage, 
+                { height: index % 3 === 0 ? hp(25) : hp(35) }
+              ]} 
+            />
           )}
         </View>
         <View
@@ -61,7 +69,7 @@ import {
             onPress={() => navigation.goBack()}
             style={styles.backButton}
           >
-            <Text>Back</Text>
+            <Text>GoBack</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={handleToggleFavorite}
@@ -97,7 +105,6 @@ import {
     },
     recipeImage: {
       width: wp(98),
-      height: hp(50),
       borderRadius: 35,
       borderBottomLeftRadius: 40,
       borderBottomRightRadius: 40,
